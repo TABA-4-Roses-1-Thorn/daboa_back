@@ -40,3 +40,9 @@ class Anomaly(Base):
     id = Column(Integer, primary_key=True, index=True)
     frame_id = Column(Integer)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
+
+class EventlogSchedule(Base):
+    __tablename__ = "eventlog_schedule"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date_time = Column(DateTime, nullable=False)

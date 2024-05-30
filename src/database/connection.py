@@ -3,7 +3,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 DATABASE_URL = "mysql+pymysql://root:taba@127.0.0.1:3306/taba"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

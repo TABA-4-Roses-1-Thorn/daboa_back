@@ -4,9 +4,12 @@ from sqlalchemy.orm import Session
 from pydantic import EmailStr
 
 from database.connection import get_db
-from database.orm import User, Setting
+from database.orm import User, Setting, DateTime, EventlogSchedule
+from src.schema.response import EventlogCreate
 
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
+
+from datetime import datetime
 
 
 class UserRepository:
@@ -49,3 +52,14 @@ class UserRepository:
         db.commit()
         db.refresh(db_setting)
         return db_setting
+
+class EventlogRepository:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def create_date_time(self, date_time: datetime):
+        db_datetime = EventlogSchedule(date_time=date_time)
+        self.session.add(db_datetime)
+        self.session.commit()
+        self.session.refresh(db_datetime)
+        return db_datetime

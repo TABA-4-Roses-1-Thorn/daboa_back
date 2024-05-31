@@ -1,5 +1,6 @@
+import cv2
 from fastapi import Depends
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, func
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 
@@ -10,6 +11,8 @@ from schema.response import EventlogCreate
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime
+
+from src.database.orm import Frame, Anomaly
 
 
 class UserRepository:
@@ -52,6 +55,33 @@ class UserRepository:
         db.commit()
         db.refresh(db_setting)
         return db_setting
+
+class RealStreamRepository:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def save_frame_to_db(self, frame):
+        # Generate timestamp and file path
+        timestamp = func.now()
+        file_path = f"frames/{timestamp}.jpg"
+
+        # Save frame to file
+        cv2.imwrite(file_path, frame)
+
+        # Save frame metadata to the database
+        frame_record = Frame(file_path=file_path, detection_score=0.0, timestamp=timestamp)
+        self.session.add(frame_record)
+        self.session.commit()
+        self.session.refresh(frame_record)
+
+        return frame_record
+
+    def save_anomaly_to_db(self, frame_record_id):
+        # Save anomaly metadata to the database
+        timestamp = func.now()
+        anomaly_record = Anomaly(frame_id=frame_record_id, timestamp=timestamp)
+        self.session.add(anomaly_record)
+        self.session.commit()
 
 class EventlogRepository:
     def __init__(self, session: Session):

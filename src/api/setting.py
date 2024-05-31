@@ -37,7 +37,7 @@ def logout_confirm():
 def delete_confirm():
     return {"message": "Do you really want to delete your account?"}
 
-@router.post("/delete", response_class=JSONResponse)
+@router.delete("/delete", response_class=JSONResponse)
 def delete_account(db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     user = UserRepository.get_user(db, user_id=user_id)
     if user:

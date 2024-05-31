@@ -12,7 +12,7 @@ from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime
 
-from src.database.orm import Frame, Anomaly
+from database.orm import Frame, Anomaly
 
 
 class UserRepository:

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 
 class SignUpRequest(BaseModel):
@@ -10,3 +11,9 @@ class SignUpRequest(BaseModel):
 class LogInRequest(BaseModel):
     email: EmailStr
     password: str
+
+class EventlogCreate(BaseModel):
+    type: str
+    time: datetime
+    state: bool = False
+    video: str

@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime, func, Float
 from sqlalchemy.orm import declarative_base
 from pydantic import EmailStr
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -46,3 +47,11 @@ class EventlogSchedule(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime, nullable=False)
+
+class Eventlog(Base):
+    __tablename__ = "eventlog"
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String, nullable=False)
+    time = Column(DateTime, nullable=False, default=datetime.utcnow)
+    state = Column(Boolean, default=False)
+    video = Column(String, nullable=True)

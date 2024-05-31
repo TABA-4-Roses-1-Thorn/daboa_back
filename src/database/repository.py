@@ -1,5 +1,10 @@
+import cv2
 from fastapi import Depends
+<<<<<<< HEAD
 from sqlalchemy import select, delete, and_
+=======
+from sqlalchemy import select, delete, func
+>>>>>>> d33a94e26cbdd78084980c642b330e3ed284e6cf
 from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
 
@@ -11,6 +16,8 @@ from schema.request import EventlogCreate
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime
+
+from database.orm import Frame, Anomaly
 
 
 class UserRepository:
@@ -54,6 +61,33 @@ class UserRepository:
         db.refresh(db_setting)
         return db_setting
 
+class RealStreamRepository:
+    def __init__(self, session: Session):
+        self.session = session
+
+    def save_frame_to_db(self, frame):
+        # Generate timestamp and file path
+        timestamp = func.now()
+        file_path = f"frames/{timestamp}.jpg"
+
+        # Save frame to file
+        cv2.imwrite(file_path, frame)
+
+        # Save frame metadata to the database
+        frame_record = Frame(file_path=file_path, detection_score=0.0, timestamp=timestamp)
+        self.session.add(frame_record)
+        self.session.commit()
+        self.session.refresh(frame_record)
+
+        return frame_record
+
+    def save_anomaly_to_db(self, frame_record_id):
+        # Save anomaly metadata to the database
+        timestamp = func.now()
+        anomaly_record = Anomaly(frame_id=frame_record_id, timestamp=timestamp)
+        self.session.add(anomaly_record)
+        self.session.commit()
+
 class EventlogRepository:
     def __init__(self, session: Session):
         self.session = session
@@ -64,6 +98,7 @@ class EventlogRepository:
         self.session.commit()
         self.session.refresh(db_datetime)
         return db_datetime
+<<<<<<< HEAD
 
     def create_eventlog(self, eventlog: EventlogCreate):
         db_eventlog = Eventlog(
@@ -88,3 +123,5 @@ class EventlogRepository:
             query = query.filter(Eventlog.time <= end_date)
 
         return query.offset(skip).limit(limit).all()
+=======
+>>>>>>> d33a94e26cbdd78084980c642b330e3ed284e6cf

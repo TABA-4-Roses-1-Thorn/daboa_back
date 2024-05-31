@@ -46,3 +46,12 @@ class EventlogSchedule(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime, nullable=False)
+
+class Eventlog(Base):
+    __tablename__ = "eventlog"
+
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String, nullable=False)
+    time = Column(DateTime, nullable=False)
+    state = Column(Boolean, nullable=False)
+    video = Column(String, nullable=True)

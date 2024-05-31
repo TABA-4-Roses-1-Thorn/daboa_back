@@ -12,7 +12,8 @@ from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime
 
-from database.orm import Frame, Anomaly
+from database.orm import Frame, Anomaly, Eventlog
+
 
 
 class UserRepository:
@@ -93,3 +94,5 @@ class EventlogRepository:
         self.session.commit()
         self.session.refresh(db_datetime)
         return db_datetime
+    def get_all_eventlogs(self):
+        return self.session.query(Eventlog).all()

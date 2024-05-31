@@ -32,8 +32,6 @@ class DummyModel:
 
 model = DummyModel()
 
-
-@router.websocket("/ws/cctv")
 @router.websocket("/ws/cctv")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)):
     await websocket.accept()
@@ -49,22 +47,12 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
                 await websocket.send_json({"error": "Failed to decode the frame."})
                 break
 
-            # Save frame data to file
-            timestamp = func.now()
-            file_path = f"frames/{timestamp}.jpg"
-            cv2.imwrite(file_path, frame)
-
-            # Save frame metadata to the database
-            frame_record = Frame(file_path=file_path, detection_score=0.0, timestamp=timestamp) # Frame 데이터베이스에  영상 데이터 추가
-            db.add(frame_record)
-            db.commit()
-            db.refresh(frame_record)
+            # Save frame data and metadata to the database
+            frame_record = save_frame_to_db(frame, db)
 
             if model.predict(frame):
                 print("Abnormal behavior detected!")
-                anomaly_record = Anomaly(frame_id=frame_record.id, timestamp=timestamp) # 이상행동 탐지시 anomaly 데이터베이스에 추가
-                db.add(anomaly_record)
-                db.commit()
+                save_anomaly_to_db(frame_record.id, db)
                 await websocket.send_json({"alert": "Abnormal behavior detected!"})
 
             await asyncio.sleep(0.042)
@@ -74,6 +62,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
 
     finally:
         await websocket.close()
+
 
 def generate_frames(cap):
     while True:

@@ -46,4 +46,3 @@ class EventlogSchedule(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime, nullable=False)
-

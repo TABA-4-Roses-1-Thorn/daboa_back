@@ -94,5 +94,3 @@ class EventlogRepository:
         self.session.commit()
         self.session.refresh(db_datetime)
         return db_datetime
-    def get_all_eventlogs(self):
-        return self.session.query(Eventlog).all()

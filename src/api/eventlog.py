@@ -4,7 +4,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from database.orm import User, EventlogSchedule
+
 from database.repository import UserRepository, EventlogRepository
 from schema.request import SignUpRequest, LogInRequest, EventlogCreate
 from schema.response import UserSchema, JWTResponse, EventlogScheduleResponse, EventlogScheduleCreate, EventlogResponse

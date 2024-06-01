@@ -1,10 +1,8 @@
+from typing import List
+
 import cv2
 from fastapi import Depends
-<<<<<<< HEAD
-from sqlalchemy import select, delete, and_
-=======
 from sqlalchemy import select, delete, func
->>>>>>> d33a94e26cbdd78084980c642b330e3ed284e6cf
 from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
 
@@ -99,7 +97,6 @@ class EventlogRepository:
         self.session.commit()
         self.session.refresh(db_datetime)
         return db_datetime
-<<<<<<< HEAD
 
     def create_eventlog(self, eventlog: EventlogCreate):
         db_eventlog = Eventlog(
@@ -124,5 +121,7 @@ class EventlogRepository:
             query = query.filter(Eventlog.time <= end_date)
 
         return query.offset(skip).limit(limit).all()
-=======
->>>>>>> d33a94e26cbdd78084980c642b330e3ed284e6cf
+
+    def get_all_eventlogs(self) -> List[Eventlog]:
+        return self.session.query(Eventlog).all()
+

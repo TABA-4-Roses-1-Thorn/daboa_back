@@ -1,3 +1,5 @@
+from typing import List
+
 import cv2
 from fastapi import Depends
 from sqlalchemy import select, delete, func
@@ -118,4 +120,7 @@ class EventlogRepository:
             query = query.filter(Eventlog.time <= end_date)
 
         return query.offset(skip).limit(limit).all()
+
+    def get_all_eventlogs(self) -> List[Eventlog]:
+        return self.session.query(Eventlog).all()
 

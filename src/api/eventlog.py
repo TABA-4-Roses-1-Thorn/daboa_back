@@ -37,3 +37,8 @@ def read_eventlog(
         db: Session = Depends(get_db)):
     repository = EventlogRepository(db)
     return repository.get_eventlog(skip=skip, limit=limit, start_date=start_date, end_date=end_date)
+
+@router.get("/all", response_model=List[EventlogResponse])
+def read_all_eventlogs(db: Session = Depends(get_db)):
+    repository = EventlogRepository(db)
+    return repository.get_all_eventlogs()

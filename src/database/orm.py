@@ -55,3 +55,9 @@ class Eventlog(Base):
     time = Column(DateTime, nullable=False, default=datetime.utcnow)
     state = Column(Boolean, default=False)
     video = Column(String, nullable=True)
+
+# class Analytics(Base):
+#     __tablename__ = "analytics"
+#     id = Column(Integer, primary_key=True, index=True)
+#     type = Column(String, nullable=False)
+#     time = Column(DateTime, nullable=False, default=datetime.utcnow)

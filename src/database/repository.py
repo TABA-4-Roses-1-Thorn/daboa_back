@@ -1,7 +1,7 @@
 import cv2
 from fastapi import Depends
 
-from sqlalchemy import select, delete, and_
+from sqlalchemy import select, delete, and_, func
 from sqlalchemy import select, delete, func
 from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
@@ -13,7 +13,7 @@ from schema.request import EventlogCreate
 
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from database.orm import Frame, Anomaly
 
@@ -120,3 +120,88 @@ class EventlogRepository:
             query = query.filter(Eventlog.time <= end_date)
 
         return query.offset(skip).limit(limit).all()
+
+class AnalyticsRepository:
+    def __init__(self, session: Session):
+        self.session = session
+
+    # 지난 월/주/일 대비 이상행동 건수
+    def get_monthly_stats(self):
+        now = datetime.utcnow()
+        start_of_month = datetime(now.year, now.month, 1)
+        previous_month = start_of_month - timedelta(days=1)
+        start_of_previous_month = datetime(previous_month.year, previous_month.month, 1)
+
+        current_month_count = self.session.query(func.count(Eventlog.id)).filter(
+            Eventlog.time >= start_of_month).scalar()
+        previous_month_count = self.session.query(func.count(Eventlog.id)).filter(
+            Eventlog.time >= start_of_previous_month, Eventlog.time < start_of_month).scalar()
+
+        return {
+            "current_month": current_month_count,
+            "previous_month": previous_month_count,
+            "change": (current_month_count - previous_month_count) / previous_month_count * 100 if previous_month_count else 0
+        }
+
+    def get_weekly_stats(self):
+        now = datetime.utcnow()
+        start_of_week = now - timedelta(days=now.weekday())
+        previous_week_start = start_of_week - timedelta(days=7)
+
+        current_week_count = self.session.query(func.count(EventLog.id)).filter(Eventlog.time >= start_of_week).scalar()
+        previous_week_count = self.session.query(func.count(EventLog.id)).filter(Eventlog.time >= previous_week_start,
+                                                                                 Eventlog.time < start_of_week).scalar()
+
+        return {
+            "current_week": current_week_count,
+            "previous_week": previous_week_count,
+            "change": (current_week_count - previous_week_count) / previous_week_count * 100 if previous_week_count else 0
+        }
+
+    def get_daily_stats(self):
+        now = datetime.utcnow()
+        start_of_day = datetime(now.year, now.month, now.day)
+        previous_day = start_of_day - timedelta(days=1)
+
+        current_day_count = self.session.query(func.count(Eventlog.id)).filter(Eventlog.time >= start_of_day).scalar()
+        previous_day_count = self.session.query(func.count(Eventlog.id)).filter(Eventlog.time >= previous_day,
+                                                                                Eventlog.time < start_of_day).scalar()
+
+        return {
+            "current_day": current_day_count,
+            "previous_day": previous_day_count,
+            "change": (current_day_count - previous_day_count) / previous_day_count * 100 if previous_day_count else 0
+        }
+
+    # 월/주/일/시간대별 이상행동 건수
+    def get_eventlog_monthly_stats(self):
+        now = datetime.utcnow()
+        start_year = datetime(now.year, 1, 1)
+        return self.session.query(
+            func.strftime('%Y-%m', Eventlog.time).label('period'),
+            func.count(Eventlog.id).label('count')
+        ).filter(Eventlog.time >= start_year).group_by('period').all()
+
+    def get_eventlog_weekly_stats(self):
+        now = datetime.utcnow()
+        start_date = now - timedelta(weeks=6)
+        return self.session.query(
+            func.strftime('%Y-%U', Eventlog.time).label('period'),
+            func.count(Eventlog.id).label('count')
+        ).filter(Eventlog.time >= start_date).group_by('period').all()
+
+    def get_eventlog_daily_stats(self):
+        now = datetime.utcnow()
+        start_date = now - timedelta(days=6)
+        return self.session.query(
+            func.strftime('%Y-%m-%d', Eventlog.time).label('period'),
+            func.count(EventLog.id).label('count')
+        ).filter(Eventlog.time >= start_date).group_by('period').all()
+
+    def get_eventlog_hourly_stats(self):
+        now = datetime.utcnow()
+        start_date = datetime(now.year, now.month, now.day)
+        return self.session.query(
+            extract('hour', Eventlog.time).label('hour'),
+            func.count(Eventlog.id).label('count')
+        ).filter(Eventlog.time >= start_date).group_by('hour').all()

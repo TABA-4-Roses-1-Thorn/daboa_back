@@ -38,3 +38,19 @@ class EventlogResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class AnalyticsResponse(BaseModel):
+    current_month: int
+    previous_month: int
+    change: float
+
+    class Config:
+        orm_mode = True
+
+class StatsResponse(BaseModel):
+    period: str
+    count: int
+
+class TimeStatsResponse(BaseModel):
+    hour: int
+    count: int

@@ -16,15 +16,25 @@ class UserSchema(BaseModel):
 class JWTResponse(BaseModel):
     access_token: str
 
-class EventlogBase(BaseModel):
+class EventlogScheduleBase(BaseModel):
     date_time: datetime
 
-class EventlogCreate(BaseModel):
+class EventlogScheduleCreate(BaseModel):
     date_time: datetime = Field(..., example="2024-05-30T07:06:58.194000+00:00")
+
+class EventlogScheduleResponse(BaseModel):
+    id: int
+    date_time: datetime
+
+    class Config:
+        orm_mode = True
 
 class EventlogResponse(BaseModel):
     id: int
-    date_time: datetime
+    type: str
+    time: datetime
+    state: bool
+    video: str
 
     class Config:
         orm_mode = True

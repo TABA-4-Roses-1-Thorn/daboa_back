@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime, func, Float
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, Session
 from pydantic import EmailStr
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -19,12 +20,28 @@ class User(Base):
             email=email,
             password=hashed_password,
         )
-class Setting(Base):
-    __tablename__ = "settings"
+
+    @classmethod
+    def edit(cls, db: Session, user_id: int, username: str = None, email: str = None, password: str = None) -> "User":
+        user = db.query(cls).filter(cls.id == user_id).first()
+        if not user:
+            raise ValueError("User not found")
+
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        if password:
+            user.password = password
+
+        db.commit()
+        db.refresh(user)
+        return user
+class AiMessage(Base):
+    __tablename__ = "ai_message"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False)
-    ai_message = Column(String, nullable=True)
+    content = Column(String, index=True)
 
 class Frame(Base):
     __tablename__ = "frames"
@@ -46,3 +63,11 @@ class EventlogSchedule(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime, nullable=False)
+
+class Eventlog(Base):
+    __tablename__ = "eventlog"
+    id = Column(Integer, primary_key=True, index=True)
+    type = Column(String, nullable=False)
+    time = Column(DateTime, nullable=False, default=datetime.utcnow)
+    state = Column(Boolean, default=False)
+    video = Column(String, nullable=True)

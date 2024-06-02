@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
 
 from database.connection import get_db
-from database.orm import User, Setting, DateTime, EventlogSchedule, Eventlog
+from database.orm import User, DateTime, EventlogSchedule, Eventlog
 from schema.response import EventlogScheduleCreate
 from schema.request import EventlogCreate
 
@@ -36,28 +36,24 @@ class UserRepository:
     def get_user(db: Session, user_id: int):
         return db.query(User.User).filter(User.User.id == user_id).first()
 
-    def update_user(db: Session, user_id: int, user: UserUpdate):
-        db_user = db.query(User.User).filter(User.User.id == user_id).first()
-        db_user.username = user.username
-        db_user.email = user.email
-        db_user.password = user.password
-        db.commit()
-        db.refresh(db_user)
-        return db_user
+    def edit_user(self, user_id: int, username: str = None, email: str = None, password: str = None) -> User:
+        return User.edit(
+            db=self.session,
+            user_id=user_id,
+            username=username,
+            email=email,
+            password=password
+        )
 
-    def create_setting(db: Session, setting: SettingCreate, user_id: int):
-        db_setting = Setting(**setting.dict(), user_id=user_id)
-        db.add(db_setting)
-        db.commit()
-        db.refresh(db_setting)
-        return db_setting
+    def delete_user(self, user_id: int) -> None:
+        user = self.session.query(User).filter(User.id == user_id).first()
+        if user:
+            self.session.delete(user)
+            self.session.commit()
+        else:
+            raise ValueError("User not found")
 
-    def update_setting(db: Session, setting: SettingUpdate, setting_id: int):
-        db_setting = db.query(Setting).filter(Setting.id == setting_id).first()
-        db_setting.ai_message = setting.ai_message
-        db.commit()
-        db.refresh(db_setting)
-        return db_setting
+
 
 class RealStreamRepository:
     def __init__(self, session: Session):

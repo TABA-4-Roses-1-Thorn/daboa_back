@@ -1,13 +1,9 @@
 from fastapi import FastAPI
-<<<<<<< HEAD
 
 from api import user, realstream, setting, eventlog, analytics
-=======
 from fastapi.middleware.cors import CORSMiddleware
 from api import user, realstream, setting, eventlog
 
-
->>>>>>> 3fcf30092886ff3f6f4fb9f1a49fd7ca83a526d0
 # 데이터베이스 테이블 생성
 #Base.metadata.create_all(bind=engine)
 

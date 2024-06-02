@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from sqlalchemy.orm import Session
+from typing import List, Optional
+from datetime import datetime
 
 from database.orm import User, EventlogSchedule
 from database.repository import UserRepository, EventlogRepository
 from schema.request import SignUpRequest, LogInRequest
-from schema.response import UserSchema, JWTResponse, EventlogResponse, EventlogCreate
+from schema.response import UserSchema, JWTResponse, EventlogResponse, EventlogScheduleCreate
 from service.user import UserService
 from database.connection import get_db
 
@@ -13,18 +15,15 @@ router = APIRouter(prefix="/eventlog")
 
 @router.post("/video_schedule", response_model=EventlogResponse)
 def eventlog_schedule_handler(
-        schedule: EventlogCreate, db: Session = Depends(get_db)
+        schedule: EventlogScheduleCreate, db: Session = Depends(get_db)
 ):
     eventlog_schedule_repository = EventlogRepository(db)
     eventlog_schedule = eventlog_schedule_repository.create_date_time(date_time=schedule.date_time)
-<<<<<<< HEAD
-    return eventlog_schedule
-=======
     return eventlog_schedule
 
 @router.post("/", response_model=EventlogResponse)
 def create_eventlog(
-        eventlog: EventlogCreate, db: Session = Depends(get_db)
+        eventlog: EventlogScheduleCreate, db: Session = Depends(get_db)
 ):
     repository = EventlogRepository(db)
     return repository.create_eventlog(eventlog)
@@ -43,4 +42,3 @@ def read_eventlog(
 def read_all_eventlogs(db: Session = Depends(get_db)):
     repository = EventlogRepository(db)
     return repository.get_all_eventlogs()
->>>>>>> origin/dev

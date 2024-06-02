@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6b2abac1-77b2-4484-a86b-a7c8ac25c281" name="Changes" comment="eventlog_schecule">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2f81918a-2856-4dc2-809b-8110a3994a0b.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2f81918a-2856-4dc2-809b-8110a3994a0b/storage_v2/_src_/schema/daboaDB.1SIOVQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/database/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/database/repository.py" afterDir="false" />
+    <list default="true" id="6b2abac1-77b2-4484-a86b-a7c8ac25c281" name="Changes" comment="analytics">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +90,7 @@
       <workItem from="1717047696614" duration="6201000" />
       <workItem from="1717114924343" duration="19000" />
       <workItem from="1717114944768" duration="5442000" />
-      <workItem from="1717321898331" duration="47000" />
+      <workItem from="1717321898331" duration="130000" />
     </task>
     <task id="LOCAL-00001" summary="eventlog_schecule">
       <option name="closed" value="true" />
@@ -102,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717054352260</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="analytics">
+      <option name="closed" value="true" />
+      <created>1717321982655</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1717321982655</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +117,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge branch 'main' into dev" />
     <MESSAGE value="eventlog_schecule" />
-    <option name="LAST_COMMIT_MESSAGE" value="eventlog_schecule" />
+    <MESSAGE value="analytics" />
+    <option name="LAST_COMMIT_MESSAGE" value="analytics" />
   </component>
 </project>

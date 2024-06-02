@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import cv2
 import numpy as np
@@ -86,3 +86,17 @@ def generate_frames(cap):
 async def stream_video():
     cap = cv2.VideoCapture(0)
     return StreamingResponse(generate_frames(cap), media_type="multipart/x-mixed-replace; boundary=frame")
+
+
+# 동영상 업로드 엔드포인트 추가
+@router.post("/upload")
+async def upload_video(file: UploadFile = File(...)):
+    video_path = f"/mnt/data/{file.filename}"
+
+    # with open(video_path, "wb") as buffer:
+    #     shutil.copyfileobj(file.file, buffer)
+
+    # 동영상을 인공지능 서버로 전송 (예: 요청 코드 추가)
+    # response = requests.post("http://ai-server/upload", files={"file": open(video_path, "rb")})
+
+    return {"filename": file.filename, "message": "Video uploaded successfully"}

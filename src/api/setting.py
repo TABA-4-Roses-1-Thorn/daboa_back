@@ -9,13 +9,6 @@ from schema.setting_schema import UserUpdate
 
 router = APIRouter(prefix="/setting")
 
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-
  #예제용 사용자 ID 함수
 def get_current_user_id():
      # 실제로는 OAuth2, JWT 등을 통해 인증된 사용자 ID를 가져와야 합니다.

@@ -1,7 +1,12 @@
+from typing import List
+
 import cv2
 from fastapi import Depends
+<<<<<<< HEAD
 
 from sqlalchemy import select, delete, and_, func
+=======
+>>>>>>> 3fcf30092886ff3f6f4fb9f1a49fd7ca83a526d0
 from sqlalchemy import select, delete, func
 from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
@@ -15,7 +20,8 @@ from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime, timedelta
 
-from database.orm import Frame, Anomaly
+from database.orm import Frame, Anomaly, Eventlog
+
 
 
 class UserRepository:
@@ -121,6 +127,7 @@ class EventlogRepository:
 
         return query.offset(skip).limit(limit).all()
 
+<<<<<<< HEAD
 class AnalyticsRepository:
     def __init__(self, session: Session):
         self.session = session
@@ -205,3 +212,8 @@ class AnalyticsRepository:
             extract('hour', Eventlog.time).label('hour'),
             func.count(Eventlog.id).label('count')
         ).filter(Eventlog.time >= start_date).group_by('hour').all()
+=======
+    def get_all_eventlogs(self) -> List[Eventlog]:
+        return self.session.query(Eventlog).all()
+
+>>>>>>> 3fcf30092886ff3f6f4fb9f1a49fd7ca83a526d0

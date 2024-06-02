@@ -1,10 +1,32 @@
 from fastapi import FastAPI
+<<<<<<< HEAD
 
 from api import user, realstream, setting, eventlog, analytics
+=======
+from fastapi.middleware.cors import CORSMiddleware
+from api import user, realstream, setting, eventlog
+
+
+>>>>>>> 3fcf30092886ff3f6f4fb9f1a49fd7ca83a526d0
 # 데이터베이스 테이블 생성
 #Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",  # Flutter 앱을 실행하는 도메인 추가
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://your-frontend-domain",  # 필요한 경우 다른 도메인 추가
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(user.router)
 app.include_router(realstream.router)

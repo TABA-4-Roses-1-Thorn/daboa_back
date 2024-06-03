@@ -17,3 +17,7 @@ class EventlogCreate(BaseModel):
     time: datetime
     state: bool = False
     video: str
+
+class AnalyticsCreate(BaseModel):
+    type: str
+    time: datetime

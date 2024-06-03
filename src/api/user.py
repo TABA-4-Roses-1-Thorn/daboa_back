@@ -58,8 +58,3 @@ def user_log_in_handler(
     access_token: str = user_service.create_jwt(email=user.email)
     return JWTResponse(access_token=access_token)
 
-    # 세션에 사용자 정보 저장
-    response.set_cookie(key="session", value=user.id)
-    access_token = user_service.create_jwt(email=user.email)
-    return JWTResponse(access_token=access_token)
-

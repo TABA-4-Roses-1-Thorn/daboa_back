@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import List, Optional
-from datetime import datetime
 
 from sqlalchemy.orm import Session
+from typing import List, Optional
+from datetime import datetime
 
 
 from database.repository import UserRepository, EventlogRepository
 from schema.request import SignUpRequest, LogInRequest, EventlogCreate
-from schema.response import UserSchema, JWTResponse, EventlogScheduleResponse, EventlogScheduleCreate, EventlogResponse
+from schema.response import UserSchema, JWTResponse, EventlogScheduleResponse, EventlogResponse, EventlogScheduleCreate
 from service.user import UserService
 from database.connection import get_db
 

@@ -6,14 +6,14 @@ from datetime import datetime
 
 from database.orm import User, EventlogSchedule
 from database.repository import UserRepository, EventlogRepository
-from schema.request import SignUpRequest, LogInRequest
-from schema.response import UserSchema, JWTResponse, EventlogResponse, EventlogScheduleCreate
+from schema.request import SignUpRequest, LogInRequest, EventlogCreate
+from schema.response import UserSchema, JWTResponse, EventlogScheduleResponse, EventlogResponse, EventlogScheduleCreate
 from service.user import UserService
 from database.connection import get_db
 
 router = APIRouter(prefix="/eventlog")
 
-@router.post("/video_schedule", response_model=EventlogResponse)
+@router.post("/eventlog_schedule", response_model=EventlogScheduleResponse)
 def eventlog_schedule_handler(
         schedule: EventlogScheduleCreate, db: Session = Depends(get_db)
 ):
@@ -23,7 +23,7 @@ def eventlog_schedule_handler(
 
 @router.post("/", response_model=EventlogResponse)
 def create_eventlog(
-        eventlog: EventlogScheduleCreate, db: Session = Depends(get_db)
+        eventlog: EventlogCreate, db: Session = Depends(get_db)
 ):
     repository = EventlogRepository(db)
     return repository.create_eventlog(eventlog)

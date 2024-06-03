@@ -1,33 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="doboaDB" uuid="3a41b456-a158-4f2c-a08e-2e0078ce8cdb">
-      <driver-ref>mysql_aurora_aws</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>software.aws.rds.jdbc.mysql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql:aws://daboa.chmgi2wasrgd.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="RDS" uuid="2f81918a-2856-4dc2-809b-8110a3994a0b">
+    <data-source source="LOCAL" name="RDS3" uuid="b664eef4-2348-41eb-a083-a1548b39ea65">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://daboa.chmgi2wasrgd.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-<<<<<<< HEAD
-    <data-source source="LOCAL" name="RDS2" uuid="89bcc83a-0d59-44a5-bbcd-d598c543d6f6">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://daboa.chmgi2wasrgd.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
-=======
-    <data-source source="LOCAL" name="RDS2" uuid="c8178c36-5441-4022-b0e2-7a17928de5db">
-      <driver-ref>mysql_aurora_aws</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>software.aws.rds.jdbc.mysql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql:aws://daboa.chmgi2wasrgd.ap-northeast-2.rds.amazonaws.com:3306</jdbc-url>
->>>>>>> 3fcf30092886ff3f6f4fb9f1a49fd7ca83a526d0
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

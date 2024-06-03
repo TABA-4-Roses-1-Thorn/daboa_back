@@ -3,8 +3,8 @@ from typing import List
 import cv2
 from fastapi import Depends
 
-from sqlalchemy import select, delete, and_, func
-from sqlalchemy import select, delete, func
+from sqlalchemy import select, delete, and_, func, extract
+from sqlalchemy.sql.functions import coalesce
 from sqlalchemy.orm import Session
 from pydantic import EmailStr, BaseModel
 
@@ -12,13 +12,12 @@ from database.connection import get_db
 from database.orm import User, Setting, DateTime, EventlogSchedule, Eventlog
 from schema.response import EventlogScheduleCreate
 from schema.request import EventlogCreate
-
+from service.utils import get_all_months, get_all_weeks, get_all_days, get_all_hours
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
 from datetime import datetime, timedelta
 
 from database.orm import Frame, Anomaly, Eventlog
-
 
 
 class UserRepository:
@@ -151,8 +150,8 @@ class AnalyticsRepository:
         start_of_week = now - timedelta(days=now.weekday())
         previous_week_start = start_of_week - timedelta(days=7)
 
-        current_week_count = self.session.query(func.count(EventLog.id)).filter(Eventlog.time >= start_of_week).scalar()
-        previous_week_count = self.session.query(func.count(EventLog.id)).filter(Eventlog.time >= previous_week_start,
+        current_week_count = self.session.query(func.count(Eventlog.id)).filter(Eventlog.time >= start_of_week).scalar()
+        previous_week_count = self.session.query(func.count(Eventlog.id)).filter(Eventlog.time >= previous_week_start,
                                                                                  Eventlog.time < start_of_week).scalar()
 
         return {
@@ -180,34 +179,58 @@ class AnalyticsRepository:
     def get_eventlog_monthly_stats(self):
         now = datetime.utcnow()
         start_year = datetime(now.year, 1, 1)
-        return self.session.query(
-            func.strftime('%Y-%m', Eventlog.time).label('period'),
+        all_months = get_all_months(now.year)
+        result = self.session.query(
+            func.date_format(Eventlog.time, '%Y-%m').label('period'),
             func.count(Eventlog.id).label('count')
         ).filter(Eventlog.time >= start_year).group_by('period').all()
 
+        result_dict = {res.period: int(res.count) for res in result}
+
+        stats = [{'period': month, 'count': result_dict.get(month, 0)} for month in all_months]
+        return stats
+
     def get_eventlog_weekly_stats(self):
         now = datetime.utcnow()
-        start_date = now - timedelta(weeks=6)
-        return self.session.query(
-            func.strftime('%Y-%U', Eventlog.time).label('period'),
+        start_date = now - timedelta(weeks=5)
+        all_weeks = get_all_weeks(start_date, 5)
+        result = self.session.query(
+            func.date_format(Eventlog.time, '%Y-%u').label('period'),
             func.count(Eventlog.id).label('count')
         ).filter(Eventlog.time >= start_date).group_by('period').all()
+
+        result_dict = {res.period: int(res.count) for res in result}
+
+        stats = [{'period': week, 'count': result_dict.get(week, 0)} for week in all_weeks]
+        return stats
 
     def get_eventlog_daily_stats(self):
         now = datetime.utcnow()
         start_date = now - timedelta(days=6)
-        return self.session.query(
-            func.strftime('%Y-%m-%d', Eventlog.time).label('period'),
-            func.count(EventLog.id).label('count')
+        all_days = get_all_days(start_date, 6)
+        result = self.session.query(
+            func.date_format(Eventlog.time, '%Y-%m-%d').label('period'),
+            func.count(Eventlog.id).label('count')
         ).filter(Eventlog.time >= start_date).group_by('period').all()
+
+        result_dict = {res.period: int(res.count) for res in result}
+
+        stats = [{'period': day, 'count': result_dict.get(day, 0)} for day in all_days]
+        return stats
 
     def get_eventlog_hourly_stats(self):
         now = datetime.utcnow()
         start_date = datetime(now.year, now.month, now.day)
-        return self.session.query(
-            extract('hour', Eventlog.time).label('hour'),
+        all_hours = get_all_hours()
+        result = self.session.query(
+            func.extract('hour', Eventlog.time).label('hour'),
             func.count(Eventlog.id).label('count')
         ).filter(Eventlog.time >= start_date).group_by('hour').all()
+
+        result_dict = {str(int(res.hour)).zfill(2): int(res.count) for res in result}
+
+        stats = [{'hour': hour, 'count': result_dict.get(hour, 0)} for hour in all_hours]
+        return stats
 
     def get_all_eventlogs(self) -> List[Eventlog]:
         return self.session.query(Eventlog).all()

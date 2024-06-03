@@ -47,10 +47,40 @@ class AnalyticsResponse(BaseModel):
     class Config:
         orm_mode = True
 
+class MonthlyStatsResponse(BaseModel):
+    current_month: int
+    previous_month: int
+    change: float
+
+    class Config:
+        orm_mode = True
+
+class WeeklyStatsResponse(BaseModel):
+    current_week: int
+    previous_week: int
+    change: float
+
+    class Config:
+        orm_mode = True
+
+class DailyStatsResponse(BaseModel):
+    current_day: int
+    previous_day: int
+    change: float
+
+    class Config:
+        orm_mode = True
+
 class StatsResponse(BaseModel):
     period: str
     count: int
 
+    class Config:
+        orm_mode = True
+
 class TimeStatsResponse(BaseModel):
     hour: int
     count: int
+
+    class Config:
+        orm_mode = True

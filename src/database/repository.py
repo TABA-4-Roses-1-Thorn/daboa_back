@@ -33,8 +33,10 @@ class UserRepository:
         self.session.refresh(instance=user)
         return user
 
-    def get_user(db: Session, user_id: int):
-        return db.query(User.User).filter(User.User.id == user_id).first()
+    def get_user(self, user_id: int) -> User | None:
+        return self.session.scalar(
+            select(User).where(User.id == user_id)
+        )
 
     def edit_user(self, user_id: int, username: str = None, email: str = None, password: str = None) -> User:
         return User.edit(

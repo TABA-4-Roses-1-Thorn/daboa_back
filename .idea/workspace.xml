@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6b2abac1-77b2-4484-a86b-a7c8ac25c281" name="Changes" comment="analytics">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/analytics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/service/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/eventlog.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/eventlog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/database/orm.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/database/orm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/database/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/database/repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schema/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schema/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/response.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +46,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Merging dev",
+    "git-widget-placeholder": "dev",
     "last_opened_file_path": "C:/Users/Admin/taba - 복사본",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

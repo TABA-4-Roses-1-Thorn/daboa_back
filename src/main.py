@@ -24,9 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 세션 설정 -> 로그인 시에 session id 획득 --> 로그아웃 기능까지 이어지도록 구성
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
-
 app.include_router(user.router)
 @app.middleware("http")
 async def authenticate_request(request: Request, call_next):

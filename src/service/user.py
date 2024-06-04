@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from http.client import HTTPException
+
 from pydantic import EmailStr
 
 import bcrypt
@@ -40,3 +42,12 @@ class UserService:
             access_token, self.secret_key, algorithms=[self.jwt_algorithm]
         )
         return payload["sub"]
+
+    def decode_access_token(self, token: str):
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.jwt_algorithm])
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")

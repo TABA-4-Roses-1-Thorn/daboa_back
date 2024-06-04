@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from typing import List
@@ -12,7 +14,12 @@ router = APIRouter(prefix="/setting_ai_message")
 @router.get("/ai_audio_ment_settings_screen", response_model=List[AiMessageSchema])
 def read_ai_messages(db: Session = Depends(get_db)):
     ai_messages = db.query(AiMessage).all()
-    return ai_messages
+    # Convert to JSON string with UTF-8 encoding
+    ai_messages_schema = [AiMessageSchema.from_orm(msg) for msg in ai_messages]
+    json_data = json.dumps([msg.dict() for msg in ai_messages_schema], ensure_ascii=False).encode('utf-8')
+
+    return Response(content=json_data, media_type="application/json; charset=utf-8")
+
 
 # 새로운 AI 메시지 추가
 @router.post("/ai_audio_ment_settings_screen", response_model=AiMessageSchema)

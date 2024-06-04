@@ -14,12 +14,10 @@ def user_log_out_handler(response: Response):
     return {"message": "Logged out successfully"}
 
 def get_current_user_id(request: Request):
-    if request.state.user_id is None:
+    if not hasattr(request.state, 'user_id') or request.state.user_id is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return request.state.user_id
 
-
-# 회원정보 표시해주는 get 문서
 @router.get("/setting_screen", response_class=JSONResponse)
 def read_settings(db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     user = UserRepository(db).get_user(user_id=user_id)

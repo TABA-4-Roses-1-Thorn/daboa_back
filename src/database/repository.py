@@ -15,6 +15,7 @@ from schema.request import EventlogCreate
 from service.utils import get_all_months, get_all_weeks, get_all_days, get_all_hours
 from schema.setting_schema import SettingUpdate,UserUpdate,SettingCreate
 
+
 from datetime import datetime, timedelta
 
 from database.orm import Frame, Anomaly, Eventlog
@@ -120,6 +121,9 @@ class EventlogRepository:
             query = query.filter(Eventlog.time <= end_date)
 
         return query.offset(skip).limit(limit).all()
+
+    def get_all_eventlogs(self) -> List[Eventlog]:
+        return self.session.query(Eventlog).all()
 
 class AnalyticsRepository:
     def __init__(self, session: Session):
@@ -230,5 +234,4 @@ class AnalyticsRepository:
         stats = [{'hour': hour, 'count': result_dict.get(hour, 0)} for hour in all_hours]
         return stats
 
-    def get_all_eventlogs(self) -> List[Eventlog]:
-        return self.session.query(Eventlog).all()
+

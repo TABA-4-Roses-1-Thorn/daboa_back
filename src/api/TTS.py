@@ -23,13 +23,13 @@ async def text_to_speech(message_id: int, background_tasks: BackgroundTasks, db:
     if not ai_message:
         raise HTTPException(status_code=404, detail="Message not found")
 
-    file_path = f"tts_audio_{message_id}.mp3"
+    file_path = f"../TTS_audio/tts_audio_{message_id}.mp3"
     background_tasks.add_task(save_tts_audio, ai_message.content, file_path)
 
     return {"message": "TTS processing started", "file_path": file_path}
 @router.get("/{text}", response_class = FileResponse)
 async def get_tts_audio(message_id: int):
-    file_path = f"tts_audio_{message_id}.mp3"
+    file_path = f"../TTS_audio/tts_audio_{message_id}.mp3"
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
 

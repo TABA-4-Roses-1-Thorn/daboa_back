@@ -14,9 +14,18 @@ router = APIRouter(prefix="/setting_ai_message")
 @router.get("/ai_audio_ment_settings_screen", response_model=List[AiMessageSchema])
 def read_ai_messages(db: Session = Depends(get_db)):
     ai_messages = db.query(AiMessage).all()
+
+    # Convert to list of dictionaries
+    ai_messages_list = [
+        {
+            "id": msg.id,
+            "content": msg.content,
+        }
+        for msg in ai_messages
+    ]
+
     # Convert to JSON string with UTF-8 encoding
-    ai_messages_schema = [AiMessageSchema.from_orm(msg) for msg in ai_messages]
-    json_data = json.dumps([msg.dict() for msg in ai_messages_schema], ensure_ascii=False).encode('utf-8')
+    json_data = json.dumps(ai_messages_list, ensure_ascii=False).encode('utf-8')
 
     return Response(content=json_data, media_type="application/json; charset=utf-8")
 

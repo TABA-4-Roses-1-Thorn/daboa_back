@@ -14,18 +14,21 @@ router = APIRouter(prefix="/analytics")
 def get_monthly_stats(db: Session = Depends(get_db)):
     repository = AnalyticsRepository(db)
     stats = repository.get_monthly_stats()
+    stats['change'] = round(stats['change'], 2)
     return stats
 
 @router.get("/weekly", response_model=WeeklyStatsResponse)
 def get_weekly_stats(db: Session = Depends(get_db)):
     repository = AnalyticsRepository(db)
     stats = repository.get_weekly_stats()
+    stats['change'] = round(stats['change'], 2)
     return stats
 
 @router.get("/daily", response_model=DailyStatsResponse)
 def get_daily_stats(db: Session = Depends(get_db)):
     repository = AnalyticsRepository(db)
     stats = repository.get_daily_stats()
+    stats['change'] = round(stats['change'], 2)
     return stats
 
 # 월/주/일/시간대별 이상행동 건수
@@ -33,7 +36,9 @@ def get_daily_stats(db: Session = Depends(get_db)):
 def get_eventlog_monthly_stats(db: Session = Depends(get_db)):
     repository = AnalyticsRepository(db)
     stats = repository.get_eventlog_monthly_stats()
-    return [StatsResponse(period=stat['period'], count=stat['count']) for stat in stats]
+    # Extracting only the month from the period
+    return [StatsResponse(period=stat['period'].split('-')[1], count=stat['count']) for stat in stats]
+
 
 @router.get("/eventlog_weekly", response_model=List[StatsResponse])
 def get_eventlog_weekly_stats(db: Session = Depends(get_db)):

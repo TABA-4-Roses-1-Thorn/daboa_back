@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from api import user, realstream, setting, eventlog, ai_message, TTS, analytics
+from api import user, realstream, setting, eventlog, ai_message, TTS, analytics, anomalyDetect
 
 # 데이터베이스 테이블 생성
 #Base.metadata.create_all(bind=engine)
@@ -41,6 +41,7 @@ app.include_router(ai_message.router)
 app.include_router(eventlog.router)
 app.include_router(TTS.router)
 app.include_router(analytics.router)
+app.include_router(anomalyDetect.router)
 
 @app.get("/")
 def haelth_check_handler():

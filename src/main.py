@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from api import user, realstream, setting, eventlog, ai_message, TTS, analytics
+from api import user, realstream, setting, eventlog, ai_message, TTS, analytics, anomalyDetect
 
 # 데이터베이스 테이블 생성
 #Base.metadata.create_all(bind=engine)
@@ -24,10 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 세션 설정 -> 로그인 시에 session id 획득 --> 로그아웃 기능까지 이어지도록 구성
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
-
 app.include_router(user.router)
+#app.add_middleware(SessionMiddleware, secret_key=setting['3a3447a91a8abd0b04a08203682d896fb6f3816f0405de7aab56572a4b2b7975'])
 @app.middleware("http")
 async def authenticate_request(request: Request, call_next):
     session_id = request.cookies.get("session")
@@ -44,6 +42,7 @@ app.include_router(ai_message.router)
 app.include_router(eventlog.router)
 app.include_router(TTS.router)
 app.include_router(analytics.router)
+app.include_router(anomalyDetect.router)
 
 @app.get("/")
 def haelth_check_handler():

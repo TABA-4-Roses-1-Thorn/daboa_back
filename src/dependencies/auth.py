@@ -2,10 +2,13 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from typing import Optional
+
+
+import secrets
+
 from database.connection import get_db
 from database.repository import UserRepository
 
-import secrets
 
 def generate_secret_key(length: int = 32) -> str:
     return secrets.token_urlsafe(length)

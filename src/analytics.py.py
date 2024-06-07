@@ -1,3 +1,4 @@
+
 from datetime import datetime
 
 from fastapi import APIRouter, Depends
@@ -62,7 +63,7 @@ def get_eventlog_weekly_stats(db: Session = Depends(get_db)):
 
     formatted_stats = [
         StatsResponse(
-            period=calculate_weeks_ago(stat['period']).encode('utf-8').decode('utf-8'),
+            period=calculate_weeks_ago(stat['period']),
             count=stat['count']
         ) for stat in stats
     ]

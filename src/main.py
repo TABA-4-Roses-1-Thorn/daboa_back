@@ -25,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(user.router)
+#app.add_middleware(SessionMiddleware, secret_key=setting['3a3447a91a8abd0b04a08203682d896fb6f3816f0405de7aab56572a4b2b7975'])
 @app.middleware("http")
 async def authenticate_request(request: Request, call_next):
     session_id = request.cookies.get("session")

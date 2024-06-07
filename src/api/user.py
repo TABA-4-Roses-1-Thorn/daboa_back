@@ -33,8 +33,8 @@ def user_sign_up_handler(
     # return user(id, username)
     return UserSchema.from_orm(user)
 
-@router.post("/log-in")
-def user_log_in_handler(
+@router.post("/log-in", response_model=JWTResponse)
+async def user_log_in_handler(
         request: LogInRequest,
         user_repo: UserRepository = Depends(),
         user_service: UserService = Depends(),
@@ -55,6 +55,14 @@ def user_log_in_handler(
         raise HTTPException(status_code=401, detail="Not Authorized")
 
     # create, return jwt
-    access_token: str = user_service.create_jwt(email=user.email)
+    access_token: str = await user_service.create_jwt(email=user.email)
     return JWTResponse(access_token=access_token)
 
+
+## 테스트
+@router.get("/get-token/{email}")
+async def get_token(email: str):
+    token = await UserService.redis.get(email)
+    if token:
+        return {"token": token.decode('utf-8')}
+    raise HTTPException(status_code=404, detail="Token not found")

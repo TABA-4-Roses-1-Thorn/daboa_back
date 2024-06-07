@@ -1,7 +1,11 @@
-from typing import List
+from http.client import HTTPException
+from typing import List, Optional
 
+import aioredis
 import cv2
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt, JWTError
 
 from sqlalchemy import select, delete, and_, func, extract
 from sqlalchemy.sql.functions import coalesce
@@ -20,15 +24,21 @@ from datetime import datetime, timedelta
 
 from database.orm import Frame, Anomaly, Eventlog
 
+from service.security import TokenData
 
+SECRET_KEY = "3a3447a91a8abd0b04a08203682d896fb6f3816f0405de7aab56572a4b2b7975"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# Redis 연결
+redis = aioredis.from_url("redis://localhost:6379")
 class UserRepository:
     def __init__(self, session: Session = Depends(get_db)):
         self.session = session
 
-    def get_user_by_email(self, email: EmailStr) -> User | None:
-        return self.session.scalar(
-            select(User).where(User.email == email)
-        )
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        return self.session.query(User).filter(User.email == email).first()
 
     def save_user(self, user: User) -> User:
         self.session.add(instance=user)
@@ -57,6 +67,8 @@ class UserRepository:
             self.session.commit()
         else:
             raise ValueError("User not found")
+
+
 
 
 

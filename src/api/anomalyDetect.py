@@ -1,25 +1,38 @@
-from fastapi import FastAPI, File, UploadFile, APIRouter
-from fastapi.responses import FileResponse
-import uvicorn
+from fastapi import FastAPI, File, UploadFile, APIRouter, HTTPException
 import requests
-import shutil
+import os
 
 router = APIRouter(prefix="/anomalyDetect")
-
 # Colab 서버 URL (ngrok URL)
-COLAB_SERVER_URL = "http://127.0.0.1:5000/process-video/"
+COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
+
+# 저장할 디렉토리 경로
+SAVE_DIR = "../csv"
+
 
 @router.post("/upload-video/")
 async def upload_video(file: UploadFile = File(...)):
-    with open("temp_video.mp4", "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    try:
+        files = {"file": (file.filename, file.file, file.content_type)}
+        response = requests.post(COLAB_SERVER_URL, files=files, verify=False)
+        print(f"Request sent to {COLAB_SERVER_URL} with status code {response.status_code}")
+        print(f"Response: {response.text}")
+        if response.status_code == 200:
+            # 파일 저장 경로 설정
+            save_path = os.path.join(SAVE_DIR, "output.csv")
+            # CSV 파일 저장
+            with open(save_path, "wb") as f:
+                f.write(response.content)
+            return {"detail": "File saved successfully", "file_path": save_path}
+        else:
+            raise HTTPException(status_code=response.status_code, detail=response.text)
+    except Exception as e:
+        print(f"Exception occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # Colab 서버로 영상 전송
-    files = {'file': ('temp_video.mp4', open('temp_video.mp4', 'rb'), 'video/mp4')}
-    response = requests.post(COLAB_SERVER_URL, files=files)
+app = FastAPI()
+app.include_router(router)
 
-    # Colab 서버로부터 CSV 파일 다운로드
-    with open("output.csv", "wb") as f:
-        f.write(response.content)
-
-    return FileResponse("output.csv", media_type='text/csv', filename="output.csv")
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

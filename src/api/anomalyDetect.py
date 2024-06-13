@@ -19,7 +19,7 @@ async def upload_video(file: UploadFile = File(...)):
         print(f"Response: {response.text}")
         if response.status_code == 200:
             # 파일 저장 경로 설정
-            save_path = os.path.join(SAVE_DIR, "output.csv")
+            save_path= os.path.join(SAVE_DIR, "output.csv")
             # CSV 파일 저장
             with open(save_path, "wb") as f:
                 f.write(response.content)

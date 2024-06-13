@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile, APIRouter, HTTPException
 import requests
 import os
 
-router = APIRouter(prefix="/anomalyDetect")
+router = APIRouter(prefix="/stream")
 # Colab 서버 URL (ngrok URL)
 COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
 
@@ -10,7 +10,7 @@ COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
 SAVE_DIR = "../csv"
 
 
-@router.post("/upload-video/")
+@router.post("/upload/")
 async def upload_video(file: UploadFile = File(...)):
     try:
         files = {"file": (file.filename, file.file, file.content_type)}

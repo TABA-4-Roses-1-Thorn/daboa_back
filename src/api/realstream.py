@@ -91,15 +91,15 @@ async def stream_video():
 
 
 # 동영상 업로드 엔드포인트 추가
-@router.post("/upload")
-async def upload_video(file: UploadFile = File(...)):
-    video_path = f"../video_data/{file.filename}"
-
-    # Save the uploaded file to the specified location
-    with open(video_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    # Send the video to an AI server (for example)
-    # response = requests.post("http://ai-server/upload", files={"file": open(video_path, "rb")})
-
-    return {"filename": file.filename, "message": "Video uploaded successfully"}
+# @router.post("/upload")
+# async def upload_video(file: UploadFile = File(...)):
+#     video_path = f"../video_data/{file.filename}"
+#
+#     # Save the uploaded file to the specified location
+#     with open(video_path, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
+#
+#     # Send the video to an AI server (for example)
+#     # response = requests.post("http://ai-server/upload", files={"file": open(video_path, "rb")})
+#
+#     return {"filename": file.filename, "message": "Video uploaded successfully"}

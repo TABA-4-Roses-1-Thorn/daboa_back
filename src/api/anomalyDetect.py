@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI, File, UploadFile, APIRouter, HTTPException
 import requests
 import os
@@ -7,8 +9,8 @@ router = APIRouter(prefix="/stream")
 COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
 
 # 저장할 디렉토리 경로
-SAVE_DIR = "../csv"
-
+SAVE_DIR = "../anomaly_detect_json"
+os.makedirs(SAVE_DIR, exist_ok=True)  # 디렉토리가 없으면 생성
 
 @router.post("/upload/")
 async def upload_video(file: UploadFile = File(...)):
@@ -18,12 +20,18 @@ async def upload_video(file: UploadFile = File(...)):
         print(f"Request sent to {COLAB_SERVER_URL} with status code {response.status_code}")
         print(f"Response: {response.text}")
         if response.status_code == 200:
-            # 파일 저장 경로 설정
-            save_path= os.path.join(SAVE_DIR, "output.csv")
-            # CSV 파일 저장
-            with open(save_path, "wb") as f:
-                f.write(response.content)
-            return {"detail": "File saved successfully", "file_path": save_path}
+            # Colab 서버로부터 JSON 응답을 받음
+            json_response = response.json()
+            # 시작 시간과 끝 시간의 차이가 3초 이상인 항목만 필터링
+            filtered_anomaly_times = [interval for interval in json_response["anomaly_times"] if interval[1] - interval[0] >= 3.0]
+            filtered_response = {"anomaly_times": filtered_anomaly_times}
+            # JSON 파일 저장 경로 설정
+            json_filename = os.path.splitext(file.filename)[0] + "_anomaly.json"
+            json_save_path = os.path.join(SAVE_DIR, json_filename)
+            # JSON 파일로 저장
+            with open(json_save_path, "w") as json_file:
+                json.dump(filtered_response, json_file)
+            return {"detail": "File processed successfully", "file_path": json_save_path, "anomaly_times": filtered_response}
         else:
             raise HTTPException(status_code=response.status_code, detail=response.text)
     except Exception as e:

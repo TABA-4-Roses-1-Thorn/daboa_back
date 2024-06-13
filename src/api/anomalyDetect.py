@@ -1,8 +1,15 @@
 import json
+from datetime import datetime, timedelta
 
-from fastapi import FastAPI, File, UploadFile, APIRouter, HTTPException
+from fastapi import FastAPI, File, UploadFile, APIRouter, HTTPException, Depends
 import requests
 import os
+
+from sqlalchemy.orm import Session
+
+from database.connection import get_db
+
+from database.orm import Eventlog
 
 router = APIRouter(prefix="/stream")
 # Colab 서버 URL (ngrok URL)
@@ -13,7 +20,7 @@ SAVE_DIR = "../anomaly_detect_json"
 os.makedirs(SAVE_DIR, exist_ok=True)  # 디렉토리가 없으면 생성
 
 @router.post("/upload/")
-async def upload_video(file: UploadFile = File(...)):
+async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         files = {"file": (file.filename, file.file, file.content_type)}
         response = requests.post(COLAB_SERVER_URL, files=files, verify=False)
@@ -31,6 +38,16 @@ async def upload_video(file: UploadFile = File(...)):
             # JSON 파일로 저장
             with open(json_save_path, "w") as json_file:
                 json.dump(filtered_response, json_file)
+
+            # 데이터베이스에 삽입
+            today = datetime.today()
+            for start, end in filtered_anomaly_times:
+                start_time = today + timedelta(seconds=start)
+                video_link = f"{file.filename}?start={int(start)}"
+                db_event = Eventlog(type="이상행동", time=start_time, state=False, video=video_link)
+                db.add(db_event)
+            db.commit()
+
             return {"detail": "File processed successfully", "file_path": json_save_path, "anomaly_times": filtered_response}
         else:
             raise HTTPException(status_code=response.status_code, detail=response.text)

@@ -16,8 +16,10 @@ router = APIRouter(prefix="/stream")
 COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
 
 # 저장할 디렉토리 경로
-SAVE_DIR = "../video_data"
+SAVE_DIR = "../anomaly_detect_json"
+VIDEO_DIR = "../video_data"
 os.makedirs(SAVE_DIR, exist_ok=True)  # 디렉토리가 없으면 생성
+
 
 @router.post("/upload")
 async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -54,6 +56,8 @@ async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_d
     except Exception as e:
         print(f"Exception occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
 app = FastAPI()
 app.include_router(router)

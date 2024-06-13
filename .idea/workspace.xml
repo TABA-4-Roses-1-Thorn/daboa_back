@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6b2abac1-77b2-4484-a86b-a7c8ac25c281" name="Changes" comment="analytics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/anomaly_detect_json/C_3_12_45_BU_DYB_10-16_15-02-02_CB_RGB_DF2_F1_anomaly.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/anomaly_detect_json/C_3_7_48_BU_DYB_10-17_10-23-53_CB_RGB_DF2_M2_anomaly.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/analytics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/anomalyDetect.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/anomalyDetect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

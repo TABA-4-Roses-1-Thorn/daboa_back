@@ -10,10 +10,11 @@ from api import user, realstream, setting, eventlog, ai_message, TTS, analytics,
 app = FastAPI()
 
 origins = [
-    "http://localhost",  # Flutter 앱을 실행하는 도메인 추가
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://your-frontend-domain",  # 필요한 경우 다른 도메인 추가
+    "*",
+    # "http://localhost",  # Flutter 앱을 실행하는 도메인 추가
+    # "http://localhost:8000",
+    # "http://127.0.0.1:8000",
+    # "http://your-frontend-domain",  # 필요한 경우 다른 도메인 추가
 ]
 
 app.add_middleware(

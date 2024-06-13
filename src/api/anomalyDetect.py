@@ -19,7 +19,7 @@ COLAB_SERVER_URL = "http://romantic-goshawk-comic.ngrok-free.app/process-video/"
 SAVE_DIR = "../anomaly_detect_json"
 os.makedirs(SAVE_DIR, exist_ok=True)  # 디렉토리가 없으면 생성
 
-@router.post("/upload/")
+@router.post("/upload")
 async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         files = {"file": (file.filename, file.file, file.content_type)}

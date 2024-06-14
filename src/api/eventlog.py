@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
-
+from urllib.parse import quote
 
 from database.repository import UserRepository, EventlogRepository
 from schema.request import SignUpRequest, LogInRequest, EventlogCreate
@@ -38,7 +38,15 @@ def read_eventlog(
     repository = EventlogRepository(db)
     return repository.get_eventlog(skip=skip, limit=limit, start_date=start_date, end_date=end_date)
 
+
 @router.get("/all", response_model=List[EventlogResponse])
 def read_all_eventlogs(db: Session = Depends(get_db)):
     repository = EventlogRepository(db)
-    return repository.get_all_eventlogs()
+    eventlogs = repository.get_all_eventlogs()
+
+    # URL 인코딩
+    for eventlog in eventlogs:
+        eventlog.video = quote(eventlog.video, safe=':/#?&=')
+
+    return eventlogs
+

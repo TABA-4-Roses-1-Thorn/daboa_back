@@ -45,9 +45,6 @@ app.include_router(analytics.router)
 app.include_router(anomalyDetect.router)
 
 @app.get("/")
-<<<<<<< HEAD
-def haelth_check_handler():
-=======
 def health_check_handler():
->>>>>>> 8dcfc5854fdc7f8d40123e025d193839afa4fb7e
     return {"Hello": "World"}
+

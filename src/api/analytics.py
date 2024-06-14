@@ -56,9 +56,9 @@ def get_eventlog_weekly_stats(db: Session = Depends(get_db)):
         target_year, target_week = map(int, target_period.split('-'))
         delta_weeks = (current_year - target_year) * 52 + (current_week - target_week)
         if delta_weeks == 0:
-            return "이번 주"
+            return "This week"
         else:
-            return f"{delta_weeks-1}주 전"
+            return f"{delta_weeks-1} weeks ago"
 
     formatted_stats = [
         StatsResponse(

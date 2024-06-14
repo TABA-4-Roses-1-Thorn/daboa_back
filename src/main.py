@@ -1,19 +1,14 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import JSONResponse
 
 from api import user, realstream, setting, eventlog, ai_message, TTS, analytics, anomalyDetect
-
-# 데이터베이스 테이블 생성
-#Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 origins = [
-    "http://localhost",  # Flutter 앱을 실행하는 도메인 추가
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://your-frontend-domain",  # 필요한 경우 다른 도메인 추가
+    "*",
 ]
 
 app.add_middleware(
@@ -24,18 +19,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user.router)
-#app.add_middleware(SessionMiddleware, secret_key=setting['3a3447a91a8abd0b04a08203682d896fb6f3816f0405de7aab56572a4b2b7975'])
 @app.middleware("http")
 async def authenticate_request(request: Request, call_next):
-    session_id = request.cookies.get("session")
-    if session_id:
-        request.state.user_id = int(session_id)
-    else:
-        request.state.user_id = None
-    response = await call_next(request)
-    return response
+    try:
+        session_id = request.cookies.get("session")
+        if session_id:
+            request.state.user_id = int(session_id)
+        else:
+            request.state.user_id = None
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": "An internal server error occurred"}
+        )
 
+app.include_router(user.router)
 app.include_router(realstream.router)
 app.include_router(setting.router)
 app.include_router(ai_message.router)
@@ -45,5 +45,6 @@ app.include_router(analytics.router)
 app.include_router(anomalyDetect.router)
 
 @app.get("/")
-def haelth_check_handler():
+def health_check_handler():
     return {"Hello": "World"}
+

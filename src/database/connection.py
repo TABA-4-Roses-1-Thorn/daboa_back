@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 # 데이터베이스 URL을 설정
 user = "admin"
-pwd = "tabadaboa"
-host = "daboa.chmgi2wasrgd.ap-northeast-2.rds.amazonaws.com"
+pwd = ""
+host = ""
 port = 3306
 db_name = "daboaDB"
 DATABASE_URL = f'mysql+pymysql://{user}:{quote(pwd)}@{host}:{port}/{db_name}?charset=utf8'

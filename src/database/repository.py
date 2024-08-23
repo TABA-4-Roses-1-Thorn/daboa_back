@@ -26,7 +26,7 @@ from database.orm import Frame, Anomaly, Eventlog
 
 from service.security import TokenData
 
-SECRET_KEY = "3a3447a91a8abd0b04a08203682d896fb6f3816f0405de7aab56572a4b2b7975"
+SECRET_KEY = ""
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
